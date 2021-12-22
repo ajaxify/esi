@@ -3,10 +3,10 @@ defmodule ESI.API.Insurance do
   @typedoc """
   Options for [`Insurance.prices/1`](#prices/1).
 
-  - `:language` (DEFAULT: `:"en-us"`) -- Language to use in the response, takes precedence over Accept-Language
+  - `:language` (DEFAULT: `:en`) -- Language to use in the response, takes precedence over Accept-Language
   """
   @type prices_opts :: [prices_opt]
-  @type prices_opt :: {:language, nil | :de | :"en-us" | :fr | :ja | :ru | :zh}
+  @type prices_opt :: {:language, nil | :en | :"en-us" | :de | :fr | :ja | :ru | :zh | :ko | :es}
 
 
   @doc """

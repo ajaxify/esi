@@ -1,59 +1,12 @@
 defmodule ESI.API.Market do
 
   @typedoc """
-  Options for [`Market.history/2`](#history/2).
-
-  - `:type_id` (REQUIRED) -- Return statistics for this type
-  """
-  @type history_opts :: [history_opt]
-  @type history_opt :: {:type_id, integer}
-
-
-  @doc """
-  Return a list of historical market statistics for the specified type in a region.
-
-  ## Response Example
-
-  A list of historical market statistics:
-
-      [
-        %{
-          "average" => 5.25,
-          "date" => "2015-05-01",
-          "highest" => 5.27,
-          "lowest" => 5.11,
-          "order_count" => 2267,
-          "volume" => 16276782035
-        }
-      ]
-
-  ## Swagger Source
-
-  This function was generated from the following Swagger operation:
-
-  - `operationId` -- `get_markets_region_id_history`
-  - `path` -- `/markets/{region_id}/history/`
-
-  [View on ESI Site](https://esi.tech.ccp.is/latest/#!/Market/get_markets_region_id_history)
-
-  """
-  @spec history(region_id :: integer, opts :: history_opts) :: ESI.Request.t
-  def history(region_id, opts \\ []) do
-    %ESI.Request{
-      verb: :get,
-      path: "/markets/#{region_id}/history/",
-      opts_schema: %{datasource: {:query, :optional}, type_id: {:query, :required}},
-      opts: Map.new(opts),
-    }
-  end
-
-  @typedoc """
   Options for [`Market.group_market_group/2`](#group_market_group/2).
 
-  - `:language` (DEFAULT: `:"en-us"`) -- Language to use in the response, takes precedence over Accept-Language
+  - `:language` (DEFAULT: `:en`) -- Language to use in the response, takes precedence over Accept-Language
   """
   @type group_market_group_opts :: [group_market_group_opt]
-  @type group_market_group_opt :: {:language, nil | :de | :"en-us" | :fr | :ja | :ru | :zh}
+  @type group_market_group_opt :: {:language, nil | :en | :"en-us" | :de | :fr | :ja | :ru | :zh | :ko | :es}
 
 
   @doc """
@@ -129,89 +82,30 @@ defmodule ESI.API.Market do
     }
   end
 
-  @typedoc """
-  Options for [`Market.structure/2`](#structure/2).
-
-  - `:page` (DEFAULT: `1`) -- Which page of results to return
-  - `:token` -- Access token to use if unable to set a header
-  """
-  @type structure_opts :: [structure_opt]
-  @type structure_opt :: {:page, nil | integer} | {:token, nil | String.t}
-
-
   @doc """
-  Return all orders in a structure.
+  Get a list of item groups.
 
   ## Response Example
 
-  A list of orders:
+  A list of item group ids:
 
-      [
-        %{
-          "duration" => 90,
-          "is_buy_order" => false,
-          "issued" => "2016-09-03T05:12:25Z",
-          "location_id" => 1020988381992,
-          "min_volume" => 1,
-          "order_id" => 4623824223,
-          "price" => 9.9,
-          "range" => "region",
-          "type_id" => 34,
-          "volume_remain" => 1296000,
-          "volume_total" => 2000000
-        }
-      ]
+      [1, 2, 3]
 
   ## Swagger Source
 
   This function was generated from the following Swagger operation:
 
-  - `operationId` -- `get_markets_structures_structure_id`
-  - `path` -- `/markets/structures/{structure_id}/`
+  - `operationId` -- `get_markets_groups`
+  - `path` -- `/markets/groups/`
 
-  [View on ESI Site](https://esi.tech.ccp.is/latest/#!/Market/get_markets_structures_structure_id)
-
-  """
-  @spec structure(structure_id :: integer, opts :: structure_opts) :: ESI.Request.t
-  def structure(structure_id, opts \\ []) do
-    %ESI.Request{
-      verb: :get,
-      path: "/markets/structures/#{structure_id}/",
-      opts_schema: %{datasource: {:query, :optional}, page: {:query, :optional}, token: {:query, :optional}},
-      opts: Map.new(opts),
-    }
-  end
-
-  @doc """
-  Return a list of prices.
-
-  ## Response Example
-
-  A list of prices:
-
-      [
-        %{
-          "adjusted_price" => 306988.09,
-          "average_price" => 306292.67,
-          "type_id" => 32772
-        }
-      ]
-
-  ## Swagger Source
-
-  This function was generated from the following Swagger operation:
-
-  - `operationId` -- `get_markets_prices`
-  - `path` -- `/markets/prices/`
-
-  [View on ESI Site](https://esi.tech.ccp.is/latest/#!/Market/get_markets_prices)
+  [View on ESI Site](https://esi.tech.ccp.is/latest/#!/Market/get_markets_groups)
 
   """
-  @spec prices() :: ESI.Request.t
-  def prices() do
+  @spec groups() :: ESI.Request.t
+  def groups() do
     %ESI.Request{
       verb: :get,
-      path: "/markets/prices/",
+      path: "/markets/groups/",
       opts_schema: %{datasource: {:query, :optional}},
 
     }
@@ -272,30 +166,136 @@ defmodule ESI.API.Market do
     }
   end
 
+  @typedoc """
+  Options for [`Market.structure/2`](#structure/2).
+
+  - `:page` (DEFAULT: `1`) -- Which page of results to return
+  - `:token` -- Access token to use if unable to set a header
+  """
+  @type structure_opts :: [structure_opt]
+  @type structure_opt :: {:page, nil | integer} | {:token, nil | String.t}
+
+
   @doc """
-  Get a list of item groups.
+  Return all orders in a structure.
 
   ## Response Example
 
-  A list of item group ids:
+  A list of orders:
 
-      [1, 2, 3]
+      [
+        %{
+          "duration" => 90,
+          "is_buy_order" => false,
+          "issued" => "2016-09-03T05:12:25Z",
+          "location_id" => 1020988381992,
+          "min_volume" => 1,
+          "order_id" => 4623824223,
+          "price" => 9.9,
+          "range" => "region",
+          "type_id" => 34,
+          "volume_remain" => 1296000,
+          "volume_total" => 2000000
+        }
+      ]
 
   ## Swagger Source
 
   This function was generated from the following Swagger operation:
 
-  - `operationId` -- `get_markets_groups`
-  - `path` -- `/markets/groups/`
+  - `operationId` -- `get_markets_structures_structure_id`
+  - `path` -- `/markets/structures/{structure_id}/`
 
-  [View on ESI Site](https://esi.tech.ccp.is/latest/#!/Market/get_markets_groups)
+  [View on ESI Site](https://esi.tech.ccp.is/latest/#!/Market/get_markets_structures_structure_id)
 
   """
-  @spec groups() :: ESI.Request.t
-  def groups() do
+  @spec structure(structure_id :: integer, opts :: structure_opts) :: ESI.Request.t
+  def structure(structure_id, opts \\ []) do
     %ESI.Request{
       verb: :get,
-      path: "/markets/groups/",
+      path: "/markets/structures/#{structure_id}/",
+      opts_schema: %{datasource: {:query, :optional}, page: {:query, :optional}, token: {:query, :optional}},
+      opts: Map.new(opts),
+    }
+  end
+
+  @typedoc """
+  Options for [`Market.history/2`](#history/2).
+
+  - `:type_id` (REQUIRED) -- Return statistics for this type
+  """
+  @type history_opts :: [history_opt]
+  @type history_opt :: {:type_id, integer}
+
+
+  @doc """
+  Return a list of historical market statistics for the specified type in a region.
+
+  ## Response Example
+
+  A list of historical market statistics:
+
+      [
+        %{
+          "average" => 5.25,
+          "date" => "2015-05-01",
+          "highest" => 5.27,
+          "lowest" => 5.11,
+          "order_count" => 2267,
+          "volume" => 16276782035
+        }
+      ]
+
+  ## Swagger Source
+
+  This function was generated from the following Swagger operation:
+
+  - `operationId` -- `get_markets_region_id_history`
+  - `path` -- `/markets/{region_id}/history/`
+
+  [View on ESI Site](https://esi.tech.ccp.is/latest/#!/Market/get_markets_region_id_history)
+
+  """
+  @spec history(region_id :: integer, opts :: history_opts) :: ESI.Request.t
+  def history(region_id, opts \\ []) do
+    %ESI.Request{
+      verb: :get,
+      path: "/markets/#{region_id}/history/",
+      opts_schema: %{datasource: {:query, :optional}, type_id: {:query, :required}},
+      opts: Map.new(opts),
+    }
+  end
+
+  @doc """
+  Return a list of prices.
+
+  ## Response Example
+
+  A list of prices:
+
+      [
+        %{
+          "adjusted_price" => 306988.09,
+          "average_price" => 306292.67,
+          "type_id" => 32772
+        }
+      ]
+
+  ## Swagger Source
+
+  This function was generated from the following Swagger operation:
+
+  - `operationId` -- `get_markets_prices`
+  - `path` -- `/markets/prices/`
+
+  [View on ESI Site](https://esi.tech.ccp.is/latest/#!/Market/get_markets_prices)
+
+  """
+  @spec prices() :: ESI.Request.t
+  def prices() do
+    %ESI.Request{
+      verb: :get,
+      path: "/markets/prices/",
       opts_schema: %{datasource: {:query, :optional}},
 
     }

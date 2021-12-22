@@ -4,12 +4,12 @@ defmodule ESI.API.Search do
   Options for [`Search.search/1`](#search/1).
 
   - `:categories` (REQUIRED) -- Type of entities to search for
-  - `:language` (DEFAULT: `:"en-us"`) -- Language to use in the response, takes precedence over Accept-Language
+  - `:language` (DEFAULT: `:en`) -- Language to use in the response, takes precedence over Accept-Language
   - `:search` (REQUIRED) -- The string to search on
   - `:strict` (DEFAULT: `false`) -- Whether the search should be a strict match
   """
   @type search_opts :: [search_opt]
-  @type search_opt :: {:categories, [:agent | :alliance | :character | :constellation | :corporation | :faction | :inventory_type | :region | :solar_system | :station]} | {:language, nil | :de | :"en-us" | :fr | :ja | :ru | :zh} | {:search, String.t} | {:strict, nil | boolean}
+  @type search_opt :: {:categories, [:agent | :alliance | :character | :constellation | :corporation | :faction | :inventory_type | :region | :solar_system | :station]} | {:language, nil | :en | :"en-us" | :de | :fr | :ja | :ru | :zh | :ko | :es} | {:search, String.t} | {:strict, nil | boolean}
 
 
   @doc """
