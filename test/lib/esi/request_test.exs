@@ -67,12 +67,14 @@ defmodule ESI.RequestTest do
 
     test "given a valid body option" do
       request = @request |> ESI.Request.options(foo: 1)
-      assert %{query: "", body: ~s<{"foo":1}>} = ESI.Request.encode_options(request)
+      assert %{query: "", body: "1"} = ESI.Request.encode_options(request)
+      # assert %{query: "", body: ~s<{"foo":1}>} = ESI.Request.encode_options(request)
     end
 
     test "given valid options" do
       request = @request |> ESI.Request.options(foo: 1, bar: 2)
-      assert %{query: "?bar=2", body: ~s<{"foo":1}>} = ESI.Request.encode_options(request)
+      assert %{query: "?bar=2", body: "1"} = ESI.Request.encode_options(request)
+      # assert %{query: "?bar=2", body: ~s<{"foo":1}>} = ESI.Request.encode_options(request)
     end
   end
 
