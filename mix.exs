@@ -7,11 +7,11 @@ defmodule ESI.Mixfile do
     [
       app: :esi,
       version: @version,
-      elixir: "~> 1.4",
+      elixir: "~> 1.12",
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
-      source_url: "https://github.com/bruce/esi",
-      homepage_url: "https://github.com/bruce/esi",
+      source_url: "https://github.com/ajaxify/esi",
+      homepage_url: "https://github.com/ajaxify/esi",
       description: description(),
       deps: deps(),
       docs: docs(),
@@ -46,8 +46,8 @@ defmodule ESI.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
-      {:hackney, "~> 1.10"},
-      {:poison, "~> 3.1"},
+      {:hackney, "~> 1.18"},
+      {:poison, "~> 5.0"},
       {:ex_doc, "~> 0.18.1", only: :dev, runtime: false}
     ]
   end
@@ -55,9 +55,9 @@ defmodule ESI.Mixfile do
   defp package do
     [
       files: ["lib", "mix.exs", "README.md", "LICENSE"],
-      maintainers: ["Bruce Williams", "Brian O'Grady"],
+      maintainers: ["Ajaxify"],
       licenses: ["MIT"],
-      links: %{GitHub: "https://github.com/bruce/esi"}
+      links: %{GitHub: "https://github.com/ajaxify/esi"}
     ]
   end
 end
