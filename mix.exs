@@ -48,7 +48,7 @@ defmodule ESI.Mixfile do
     [
       {:hackney, "~> 1.18"},
       {:poison, "~> 5.0"},
-      {:ex_doc, "~> 0.18.1", only: :dev, runtime: false}
+      {:ex_doc, "~> 0.26.0", only: :dev, runtime: false}
     ]
   end
 
