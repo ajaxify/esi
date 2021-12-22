@@ -40,7 +40,7 @@ defmodule ESI do
       iex> ESI.API.Universe.groups() |> ESI.request! |> length
       1000
       iex> ESI.API.Universe.groups(page: 2) |> ESI.request! |> length
-      394
+      447
 
   Paginating with `stream!`, you don't have to care about `:page`:
 
