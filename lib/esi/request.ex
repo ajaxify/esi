@@ -18,6 +18,9 @@ defmodule ESI.Request do
           opts: %{atom => any}
         }
 
+  @max_pages_header "X-Pages"
+  @max_pages_default 1000
+
   @typedoc """
   Additional request options.
 
@@ -43,12 +46,32 @@ defmodule ESI.Request do
     %{req | opts: Map.merge(req.opts, Map.new(opts))}
   end
 
+  @spec max_pages_from_resp_headers(list()) :: integer()
+  defp max_pages_from_resp_headers([]) do
+    @max_pages_default
+  end
+
+  defp max_pages_from_resp_headers(headers) do
+    :hackney_headers_new.get_value(@max_pages_header, headers, @max_pages_default) |>
+    String.to_integer
+  end
+
   @base "https://esi.evetech.net/latest"
   @doc """
   Run a request.
   """
   @spec run(t) :: {:ok, any} | {:error, any}
   def run(request) do
+    case do_validate_run(request) do
+      {:ok, resp, _resp_headers} ->
+        {:ok, resp}
+
+      other ->
+        other
+    end
+  end
+
+  defp do_validate_run(request) do
     case validate(request) do
       :ok ->
         do_run(request)
@@ -89,6 +112,7 @@ defmodule ESI.Request do
     end
   end
 
+  @spec do_run(request :: ESI.Request.t()) :: {:ok, Poison.Parser.t, list} | {:error, String.t()}
   defp do_run(request) do
     encoded_opts = encode_options(request)
     url = @base <> request.path <> encoded_opts.query
@@ -98,8 +122,11 @@ defmodule ESI.Request do
            follow_redirect: true,
            recv_timout: 30_000
          ]) do
-      {:ok, code, _headers, body} when code in 200..299 ->
-        Poison.decode(body)
+      {:ok, code, headers, body} when code in 200..299 ->
+        case Poison.decode(body) do
+          {:ok, body} -> {:ok, body, :hackney_headers_new.from_list(headers)}
+          {:error, err} -> {:error, err}
+        end
 
       {:ok, 404, _, body} ->
         case Poison.decode(body) do
@@ -151,26 +178,29 @@ defmodule ESI.Request do
   def stream!(%{opts_schema: %{page: _}} = request) do
     request_fun = fn page ->
       options(request, page: page)
-      |> run
+      |> do_validate_run
     end
 
     first_page = Map.get(request.opts, :page, 1)
 
     Stream.resource(
-      fn -> {request_fun, first_page} end,
+      fn -> {request_fun, first_page, max_pages_from_resp_headers([])} end,
       fn
         :quit ->
           {:halt, nil}
 
-        {fun, page} ->
+        {_, page, max_page} when page > max_page ->
+          {[], :quit}
+
+        {fun, page, max_page} when page <= max_page ->
           case fun.(page) do
-            {:ok, []} ->
+            {:ok, [], _resp_headers} ->
               {[], :quit}
 
-            {:ok, data} when is_list(data) ->
-              {data, {fun, page + 1}}
+            {:ok, data, resp_headers} when is_list(data) ->
+              {data, {fun, page + 1, max_pages_from_resp_headers(resp_headers)}}
 
-            {:ok, data} ->
+            {:ok, data, _resp_headers} ->
               {[data], :quit}
 
             {:error, err} ->
