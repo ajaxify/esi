@@ -50,7 +50,7 @@ defmodule ESI do
   Like any stream, you can use `Enum.to_list/1` to get all the items:
 
       iex> ESI.API.Universe.groups() |> ESI.stream! |> Enum.to_list |> length
-      1394
+      1447
 
   It even works for requests that don't paginate:
 
